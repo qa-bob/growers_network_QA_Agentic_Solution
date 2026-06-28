@@ -10,10 +10,11 @@
  */
 
 import { test as base, expect } from '@playwright/test';
-import { loadSiteConfig, type SiteConfig } from '@types/site-config.types';
+import { loadSiteConfig, type SiteConfig } from '@app-types/site-config.types';
 import { HomePage } from '@pages/home.page';
 import { NavigationPage } from '@pages/navigation.page';
 import { ContactFormPage } from '@pages/contact.page';
+import { CommunityPage } from '@pages/community.page';
 
 // ── Fixture type definitions ─────────────────────────────────────────────────
 
@@ -26,6 +27,8 @@ export interface Fixtures {
   navigationPage: NavigationPage;
   /** ContactFormPage page object (does not auto-navigate) */
   contactPage: ContactFormPage;
+  /** CommunityPage — Growers Network specific sections (does not auto-navigate) */
+  communityPage: CommunityPage;
 }
 
 // ── Extended test object ─────────────────────────────────────────────────────
@@ -66,6 +69,15 @@ export const test = base.extend<Fixtures>({
   contactPage: async ({ page, siteConfig }, use) => {
     const contactPage = new ContactFormPage(page, siteConfig);
     await use(contactPage);
+  },
+
+  /**
+   * communityPage — Growers Network-specific page object for homepage sections.
+   * Does not auto-navigate; tests call navigate() or page.goto() themselves.
+   */
+  communityPage: async ({ page, siteConfig }, use) => {
+    const communityPage = new CommunityPage(page, siteConfig);
+    await use(communityPage);
   },
 });
 

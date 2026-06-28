@@ -1,3 +1,9 @@
+---
+name: site-analyzer
+description: Crawls a live website and produces a fully-populated site.config.json. Use when onboarding a new company repo, verifying an existing config after a site redesign, or when the user runs /analyze-site. Returns a completed JSON config and an issues checklist.
+tools: WebFetch, Read, Write, Bash
+---
+
 # Agent: site-analyzer
 
 ## Role

@@ -1,0 +1,188 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run full suite nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_tag:
+        description: 'Test tag to run (smoke, navigation, forms, functional, visual, responsive)'
+        required: false
+        default: ''
+
+jobs:
+  smoke:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run smoke tests
+        run: npm run test:smoke
+        env:
+          CI: true
+          SITE_URL: https://growersnetwork.org
+
+      - name: Upload smoke test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-report
+          path: playwright-report/
+          retention-days: 7
+
+  functional:
+    name: Functional & Navigation Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: TypeScript check
+        run: npm run typecheck
+
+      - name: Run navigation tests
+        run: npm run test:navigation
+        env:
+          CI: true
+          SITE_URL: https://growersnetwork.org
+
+      - name: Run functional tests
+        run: npx playwright test --grep @functional
+        env:
+          CI: true
+          SITE_URL: https://growersnetwork.org
+
+      - name: Run form tests
+        run: npm run test:forms
+        env:
+          CI: true
+          SITE_URL: https://growersnetwork.org
+
+      - name: Upload functional test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: functional-report
+          path: playwright-report/
+          retention-days: 7
+
+  responsive:
+    name: Responsive Layout Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run responsive tests
+        run: npm run test:responsive
+        env:
+          CI: true
+          SITE_URL: https://growersnetwork.org
+
+      - name: Upload responsive test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: responsive-report
+          path: playwright-report/
+          retention-days: 7
+
+  visual:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: smoke
+    # Only run visual tests on push to main to avoid snapshot drift on PRs
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run visual regression tests
+        run: npm run test:visual
+        env:
+          CI: true
+          SITE_URL: https://growersnetwork.org
+
+      - name: Upload visual report and diffs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  lint:
+    name: TypeScript & Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npm run typecheck
+
+      - name: ESLint
+        run: npm run lint

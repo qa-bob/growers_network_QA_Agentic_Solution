@@ -49,6 +49,7 @@ Build and maintain a comprehensive GUI, functional, and regression test suite fo
 ### TypeScript
 - Strict mode is enabled (`tsconfig.json`)
 - All page object properties must be typed
+- Path aliases: `@pages/*`, `@fixtures/*`, `@utils/*`, `@app-types/*` (not `@types/*` — that conflicts with TypeScript's built-in `@types` namespace)
 - Run `npx tsc --noEmit` to check for errors before finishing
 
 ---

@@ -1,83 +1,301 @@
 # Growers Network — QA Agentic Solution
 
-> Automated QA framework for [Growers Network](https://growersnetwork.org/) built with Playwright + TypeScript.
+Playwright + TypeScript regression test suite for [Growers Network](https://growersnetwork.org/) — a professional cannabis community platform. Built with the **Page Object Model (POM)** and **OOP** principles, and designed for AI-assisted maintenance via [Claude Code](https://claude.ai/code).
 
 ---
 
-## 🏢 Company Profile
+## What This Repo Tests
 
-| Field | Details |
-|-------|---------|
-| **Company** | Growers Network |
-| **Description** | Community platform for cannabis professionals |
-| **Website** | [https://growersnetwork.org/](https://growersnetwork.org/) |
-| **LinkedIn** | [View Profile](https://www.linkedin.com/company/growers-network/) |
-| **City** | Tucson |
-| **Founded** | 2016 |
-| **Funding** | Self-funded |
-| **Employees** | 1-10 |
-| **Industry** | — |
-| **Category** | — |
-| **Leaders** | Nate Lipton (Co-Founder) |
+[Growers Network](https://growersnetwork.org/) is a B2B community platform for cannabis cultivation professionals. This suite covers:
+
+- Site availability and performance (smoke)
+- Primary navigation and mobile menu
+- Contact form fields and HTML5 validation (no form submission)
+- Homepage business features: hero, community sections, CTAs, social links, footer
+- Content pages: Resources, Blog/Industry Insight, Glossary
+- Visual screenshot regression across desktop, tablet, and mobile
+- Responsive layout at 390px, 768px, and 1280px viewports
+
+**What we never test:** form submission, account creation, login, or any action that could create real data on the site.
 
 ---
 
-## 🧪 QA Agentic Solution
+## Tech Stack
 
-This repository will contain a Playwright TypeScript test automation framework
-for **Growers Network**'s web application at https://growersnetwork.org/.
-
-### Planned Test Coverage
-
-- [ ] Smoke tests
-- [ ] Functional tests
-- [ ] Regression suite
-- [ ] Accessibility checks
-- [ ] Performance baselines
-
-### Tech Stack
-
-- [Playwright](https://playwright.dev/) — browser automation
-- TypeScript — strongly typed test code
-- GitHub Actions — CI/CD pipeline
-- AI-assisted test generation via GitHub Copilot
+| Tool | Purpose |
+|------|---------|
+| [Playwright](https://playwright.dev/) v1.44+ | Browser automation |
+| TypeScript 5 (strict mode) | Type-safe test code |
+| Page Object Model | Separates selectors, actions, and assertions |
+| GitHub Actions | CI/CD test pipeline |
+| Claude Code | AI-assisted test generation and maintenance |
 
 ---
 
-## 🚀 Getting Started
+## Development Environment Setup
+
+### Prerequisites
+
+| Requirement | Version |
+|------------|---------|
+| Node.js | 18 LTS or 20 LTS |
+| npm | 9+ |
+| Git | 2.38+ |
+
+### Installation
 
 ```bash
-# Install dependencies
+# 1. Clone the repository
+git clone <repo-url>
+cd growers_network_QA_Agentic_Solution
+
+# 2. Install Node.js dependencies
 npm install
 
-# Install Playwright browsers
-npx playwright install
+# 3. Install Playwright browsers
+npx playwright install --with-deps chromium
 
-# Run all tests
-npx playwright test
+# 4. (Optional) Install all browser engines
+npx playwright install --with-deps
+```
 
-# Run tests with UI
+### Configuration
+
+The target site is configured in `site.config.json`. No changes needed for the default setup:
+
+```json
+{
+  "name": "Growers Network",
+  "url": "https://growersnetwork.org",
+  "hasContactForm": true,
+  "viewports": ["desktop", "mobile", "tablet"]
+}
+```
+
+To run against a different URL (e.g., a staging environment):
+
+```bash
+SITE_URL=https://staging.growersnetwork.org npm test
+```
+
+### Verify setup
+
+```bash
+# Run smoke tests — should pass in ~30 seconds
+npm run test:smoke
+
+# Open the Playwright UI to run and debug interactively
 npx playwright test --ui
 ```
 
 ---
 
-## 📁 Project Structure
+## Running Tests
 
-```
-growers_network_QA_Agentic_Solution/
-├── tests/
-│   ├── smoke/
-│   ├── functional/
-│   └── regression/
-├── pages/          # Page Object Models
-├── fixtures/       # Test data
-├── utils/          # Helpers
-├── playwright.config.ts
-├── package.json
-└── README.md
+```bash
+# All tests
+npm test
+
+# By category
+npm run test:smoke          # Site availability — fastest gate check
+npm run test:navigation     # Nav links, mobile menu, routing
+npm run test:forms          # Form fields and validation
+npm run test:visual         # Screenshot regression
+npm run test:responsive     # Viewport layout checks
+
+# Specific tags (can combine)
+npx playwright test --grep "@functional"
+npx playwright test --grep "@smoke|@navigation"
+
+# Interactive / headed mode
+npx playwright test --headed
+npx playwright test --ui
+
+# Single browser
+npx playwright test --project=chromium-desktop
+
+# View HTML report
+npm run report
 ```
 
 ---
 
-*Generated as part of the Phoenix Startup QA Agentic Solutions project.*
+## Project Structure
+
+```
+growers_network_QA_Agentic_Solution/
+├── site.config.json              # Target site URL, flags, and nav items
+├── playwright.config.ts          # Playwright projects (desktop, mobile, tablet)
+├── global-setup.ts               # Pre-suite reachability check
+├── tsconfig.json                 # TypeScript strict config with path aliases
+├── package.json                  # npm scripts and dependencies
+│
+├── src/
+│   ├── pages/
+│   │   ├── base.page.ts          # BasePage — shared methods all pages inherit
+│   │   ├── home.page.ts          # HomePage — hero, CTAs, headings
+│   │   ├── navigation.page.ts    # NavigationPage — nav links, mobile menu
+│   │   ├── contact.page.ts       # ContactFormPage — form fields, validation
+│   │   └── community.page.ts     # CommunityPage — GN-specific sections, footer, social
+│   ├── fixtures/
+│   │   └── site.fixture.ts       # Custom Playwright fixtures exposing page objects
+│   ├── utils/
+│   │   ├── link-checker.ts       # HTTP HEAD request helpers
+│   │   └── visual-helper.ts      # Screenshot comparison helpers
+│   └── types/
+│       └── site-config.types.ts  # SiteConfig TypeScript interface
+│
+├── tests/
+│   ├── smoke/
+│   │   └── site-availability.spec.ts     # HTTP 200, title, no JS errors, HTTPS
+│   ├── navigation/
+│   │   └── nav-links.spec.ts             # Nav visibility, broken links, mobile menu
+│   ├── forms/
+│   │   └── contact-form.spec.ts          # Form fields, labels, HTML5 validation
+│   ├── functional/
+│   │   └── homepage-features.spec.ts     # Hero, sections, CTAs, social, footer
+│   ├── visual/
+│   │   └── visual-regression.spec.ts     # Full-page screenshot regression
+│   ├── responsive/
+│   │   └── layout.spec.ts                # Layout at 390px / 768px / 1280px
+│   └── custom/                           # Site-specific tests generated by agents
+│
+├── .claude/
+│   ├── agents/
+│   │   ├── site-analyzer.md      # Crawls site and updates site.config.json
+│   │   └── test-generator.md     # Generates site-specific test files
+│   ├── commands/
+│   │   ├── analyze-site.md       # /analyze-site slash command
+│   │   ├── generate-full-suite.md # /generate-full-suite slash command
+│   │   ├── run-smoke.md          # /run-smoke slash command
+│   │   ├── update-baseline.md    # /update-baseline slash command
+│   │   └── generate-report.md   # /generate-report slash command
+│   ├── rules/
+│   │   ├── testing.md            # Path-scoped rules for tests/**/*.spec.ts
+│   │   └── page-objects.md       # Path-scoped rules for src/pages/**/*.ts
+│   └── hooks/
+│       └── pre-test.sh           # Pre-test reachability check hook
+│
+├── .github/
+│   ├── workflows/
+│   │   └── playwright.yml        # CI: smoke → functional → visual → responsive
+│   ├── CONTRIBUTING.md           # Contributor guide and architecture rules
+│   ├── PULL_REQUEST_TEMPLATE.md  # PR checklist template
+│   └── copilot-instructions.md   # GitHub Copilot coding instructions
+│
+├── CLAUDE.md                     # Claude Code project instructions (primary)
+├── AGENTS.md                     # Agent registry for all AI tools
+├── Skills.md                     # Slash command / skill reference
+├── __snapshots__/                # Visual regression baseline images (committed)
+└── playwright-report/            # HTML test report (gitignored)
+```
+
+---
+
+## Test Tags Reference
+
+Every test includes a tag in its name. Use `--grep` to filter by tag.
+
+| Tag | Test folder | What it covers |
+|-----|------------|----------------|
+| `@smoke` | `tests/smoke/` | HTTP status, title, no JS errors, HTTPS, load time |
+| `@navigation` | `tests/navigation/` | Nav visible, links reachable, mobile menu, logo link |
+| `@forms` | `tests/forms/` | Form presence, required fields, labels, HTML5 validation |
+| `@functional` | `tests/functional/` | Business features, content sections, CTAs, social links |
+| `@visual` | `tests/visual/` | Full-page screenshot regression |
+| `@responsive` | `tests/responsive/` | Layout at 390px, 768px, 1280px — no horizontal scroll |
+| `@custom` | `tests/custom/` | Site-specific tests generated by the test-generator agent |
+
+---
+
+## Claude Code Integration
+
+This repo is optimized for AI-assisted maintenance with Claude Code. Open Claude Code in this directory and use:
+
+| Slash command | What it does |
+|--------------|-------------|
+| `/analyze-site` | Crawl the live site and update `site.config.json` |
+| `/generate-full-suite` | Generate a complete POM + test suite from the live site |
+| `/run-smoke` | Run smoke tests and return a pass/fail summary |
+| `/update-baseline` | Refresh visual regression screenshot baselines |
+| `/generate-report` | Generate a markdown report from `test-results/results.json` |
+
+Claude Code reads `CLAUDE.md` for project rules. See `Skills.md` for detailed slash command docs and `AGENTS.md` for the agent registry.
+
+### Sub-agents
+
+Two specialized agents are available:
+
+- **`site-analyzer`** — crawls the live site and produces a populated `site.config.json`
+- **`test-generator`** — reads `site.config.json` and generates site-specific Playwright tests
+
+### Path-scoped rules
+
+The `.claude/rules/` directory contains path-scoped rules that load automatically:
+- `testing.md` — applies to all `tests/**/*.spec.ts` files
+- `page-objects.md` — applies to all `src/pages/**/*.ts` files
+
+---
+
+## GitHub Configuration
+
+The `.github/` folder contains:
+
+| File | Purpose |
+|------|---------|
+| `workflows/playwright.yml` | CI pipeline: lint → smoke → functional → responsive → visual |
+| `CONTRIBUTING.md` | Architecture rules, setup guide, and PR workflow for contributors |
+| `PULL_REQUEST_TEMPLATE.md` | Structured PR template with test coverage checklist |
+| `copilot-instructions.md` | GitHub Copilot coding instructions for this repo's conventions |
+
+### CI Pipeline
+
+The GitHub Actions workflow runs on every push and PR:
+
+1. **Lint** — TypeScript type check + ESLint (all branches)
+2. **Smoke** — Fast availability gate (all branches)
+3. **Functional + Navigation + Forms** — Business logic (runs after smoke passes)
+4. **Responsive** — Layout tests (runs after smoke passes)
+5. **Visual** — Screenshot regression (push to `main` and nightly only)
+
+Visual tests are skipped on PRs to prevent snapshot drift. Run `npm run baseline` locally after intentional UI changes and commit the updated snapshots.
+
+---
+
+## Contributor Rules
+
+1. **Read `CONTRIBUTING.md`** before your first PR
+2. **Never submit forms** in any test — intercept the request if needed
+3. **Never hardcode URLs** — use `siteConfig.url` from the fixture
+4. **Extend BasePage** for every new page object class
+5. **No `expect()` inside page object methods** — return values; let tests assert
+6. **Tag every test** — at least one of the tags in the table above
+7. **Run `npm run typecheck` before pushing** — TypeScript must compile cleanly
+8. **Run `npm run test:smoke` before opening a PR** — smoke tests must pass
+
+---
+
+## Visual Regression Baselines
+
+Baseline screenshots are stored in `__snapshots__/` and committed to Git.
+
+When a visual test fails:
+- Check the diff image in `test-results/` — is the change expected?
+- If YES (intentional redesign): run `npm run baseline`, review all changed images, then commit
+- If NO (unintended regression): investigate the cause before updating the baseline
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `Cannot find module '@fixtures/site.fixture'` | Check `tsconfig.json` path aliases match your `src/` structure |
+| Smoke tests fail with connection error | Run `bash .claude/hooks/pre-test.sh` to check site reachability |
+| Visual tests produce diff on CI | Snapshots must be generated on the same OS — use the CI-generated baseline |
+| `waitForTimeout` deprecation warning | Replace with `waitForLoadState()` or `waitForSelector()` |
+| TypeScript strict errors on `any` | Provide an explicit type or use `unknown` with a type guard |
+
+---
+
+*Part of the Phoenix Startup QA Agentic Solutions project — AI-assisted regression testing for B2B SaaS websites.*

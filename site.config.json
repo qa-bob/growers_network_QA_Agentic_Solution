@@ -1,23 +1,26 @@
-﻿{
-    "name":  "Growers Network",
-    "url":  "https://growersnetwork.org",
-    "description":  "",
-    "industry":  "",
-    "hasContactForm":  true,
-    "expectedNavItems":  [
-
-                         ],
-    "viewports":  [
-                      "desktop",
-                      "mobile",
-                      "tablet"
-                  ],
-    "skipVisual":  false,
-    "skipForms":  false,
-    "auth":  {
-                 "required":  false,
-                 "loginUrl":  "",
-                 "username":  "",
-                 "password":  ""
-             }
+{
+  "name": "Growers Network",
+  "url": "https://growersnetwork.org",
+  "description": "Professional online community and resource hub for cannabis cultivation professionals worldwide.",
+  "industry": "Cannabis / Agriculture Technology",
+  "hasContactForm": true,
+  "expectedNavItems": [
+    "Log In",
+    "Sign Up",
+    "Resources",
+    "Industry Insight"
+  ],
+  "viewports": [
+    "desktop",
+    "mobile",
+    "tablet"
+  ],
+  "skipVisual": false,
+  "skipForms": false,
+  "auth": {
+    "required": false,
+    "loginUrl": "https://growersnetwork.org/login",
+    "username": "",
+    "password": ""
+  }
 }
