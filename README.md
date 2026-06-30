@@ -132,11 +132,13 @@ growers_network_QA_Agentic_Solution/
 │
 ├── src/
 │   ├── pages/
-│   │   ├── base.page.ts          # BasePage — shared methods all pages inherit
-│   │   ├── home.page.ts          # HomePage — hero, CTAs, headings
-│   │   ├── navigation.page.ts    # NavigationPage — nav links, mobile menu
-│   │   ├── contact.page.ts       # ContactFormPage — form fields, validation
-│   │   └── community.page.ts     # CommunityPage — GN-specific sections, footer, social
+│   │   ├── base.page.ts              # BasePage — shared methods all pages inherit
+│   │   ├── home.page.ts              # HomePage — hero, CTAs, headings
+│   │   ├── navigation.page.ts        # NavigationPage — nav links, mobile menu
+│   │   ├── contact.page.ts           # ContactFormPage — form fields, validation
+│   │   ├── community.page.ts         # CommunityPage — GN-specific sections, footer, social
+│   │   ├── resources.page.ts         # ResourcesPage — /resources hub, category filters
+│   │   └── industry-insight.page.ts  # IndustryInsightPage — blog, article cards, AMA
 │   ├── fixtures/
 │   │   └── site.fixture.ts       # Custom Playwright fixtures exposing page objects
 │   ├── utils/
@@ -153,7 +155,9 @@ growers_network_QA_Agentic_Solution/
 │   ├── forms/
 │   │   └── contact-form.spec.ts          # Form fields, labels, HTML5 validation
 │   ├── functional/
-│   │   └── homepage-features.spec.ts     # Hero, sections, CTAs, social, footer
+│   │   ├── homepage-features.spec.ts     # Hero, sections, CTAs, social, footer
+│   │   ├── resources-page.spec.ts        # Resource hub cards, category filters, newsletter
+│   │   └── industry-insight.spec.ts      # Article listings, category filters, AMA, social
 │   ├── visual/
 │   │   └── visual-regression.spec.ts     # Full-page screenshot regression
 │   ├── responsive/
@@ -184,7 +188,7 @@ growers_network_QA_Agentic_Solution/
 │   └── copilot-instructions.md   # GitHub Copilot coding instructions
 │
 ├── CLAUDE.md                     # Claude Code project instructions (primary)
-├── AGENTS.md                     # Agent registry for all AI tools
+├── Agent.md                      # Claude Code sub-agent documentation
 ├── Skills.md                     # Slash command / skill reference
 ├── __snapshots__/                # Visual regression baseline images (committed)
 └── playwright-report/            # HTML test report (gitignored)
@@ -220,7 +224,7 @@ This repo is optimized for AI-assisted maintenance with Claude Code. Open Claude
 | `/update-baseline` | Refresh visual regression screenshot baselines |
 | `/generate-report` | Generate a markdown report from `test-results/results.json` |
 
-Claude Code reads `CLAUDE.md` for project rules. See `Skills.md` for detailed slash command docs and `AGENTS.md` for the agent registry.
+Claude Code reads `CLAUDE.md` for project rules. See `Skills.md` for detailed slash command docs and `Agent.md` for the agent registry.
 
 ### Sub-agents
 

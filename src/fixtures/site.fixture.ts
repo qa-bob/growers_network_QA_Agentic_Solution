@@ -15,6 +15,8 @@ import { HomePage } from '@pages/home.page';
 import { NavigationPage } from '@pages/navigation.page';
 import { ContactFormPage } from '@pages/contact.page';
 import { CommunityPage } from '@pages/community.page';
+import { ResourcesPage } from '@pages/resources.page';
+import { IndustryInsightPage } from '@pages/industry-insight.page';
 
 // ── Fixture type definitions ─────────────────────────────────────────────────
 
@@ -29,6 +31,10 @@ export interface Fixtures {
   contactPage: ContactFormPage;
   /** CommunityPage — Growers Network specific sections (does not auto-navigate) */
   communityPage: CommunityPage;
+  /** ResourcesPage — /resources page object (does not auto-navigate) */
+  resourcesPage: ResourcesPage;
+  /** IndustryInsightPage — /industry-insight page object (does not auto-navigate) */
+  industryInsightPage: IndustryInsightPage;
 }
 
 // ── Extended test object ─────────────────────────────────────────────────────
@@ -78,6 +84,24 @@ export const test = base.extend<Fixtures>({
   communityPage: async ({ page, siteConfig }, use) => {
     const communityPage = new CommunityPage(page, siteConfig);
     await use(communityPage);
+  },
+
+  /**
+   * resourcesPage — Page object for the /resources page.
+   * Does not auto-navigate; call resourcesPage.navigateToResources() in tests.
+   */
+  resourcesPage: async ({ page, siteConfig }, use) => {
+    const resourcesPage = new ResourcesPage(page, siteConfig);
+    await use(resourcesPage);
+  },
+
+  /**
+   * industryInsightPage — Page object for the /industry-insight (blog) page.
+   * Does not auto-navigate; call industryInsightPage.navigateToIndustryInsight() in tests.
+   */
+  industryInsightPage: async ({ page, siteConfig }, use) => {
+    const industryInsightPage = new IndustryInsightPage(page, siteConfig);
+    await use(industryInsightPage);
   },
 });
 
