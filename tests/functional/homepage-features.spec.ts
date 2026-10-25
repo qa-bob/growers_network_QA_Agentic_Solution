@@ -14,7 +14,7 @@ import { CommunityPage } from '@pages/community.page';
 test.describe('Homepage Features @functional', () => {
   test.beforeEach(async ({ page, siteConfig }) => {
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
   });
 
   // ── Hero section ──────────────────────────────────────────────────────────────
@@ -61,10 +61,7 @@ test.describe('Homepage Features @functional', () => {
 
   test('community forum / Join the Conversation section is visible @functional', async ({ page, siteConfig }) => {
     const community = new CommunityPage(page, siteConfig);
-    if (await community.forumSection.count() === 0) {
-      console.warn('[functional] Forum section not found on homepage — may be dynamic or renamed.');
-      return;
-    }
+    test.skip(await community.forumSection.count() === 0, 'Forum section not found on homepage');
     await expect(
       community.forumSection,
       '"Join the Conversation" forum section should be visible'
@@ -73,19 +70,13 @@ test.describe('Homepage Features @functional', () => {
 
   test('Follow Your Interests section is visible with multiple pillars @functional', async ({ page, siteConfig }) => {
     const community = new CommunityPage(page, siteConfig);
-    if (await community.interestsSection.count() === 0) {
-      console.warn('[functional] "Follow Your Interests" section not found — may be renamed.');
-      return;
-    }
+    test.skip(await community.interestsSection.count() === 0, '"Follow Your Interests" section not found');
     await expect(community.interestsSection).toBeVisible({ timeout: 10_000 });
   });
 
   test('consulting / Canna Cribs section is visible @functional', async ({ page, siteConfig }) => {
     const community = new CommunityPage(page, siteConfig);
-    if (await community.consultingSection.count() === 0) {
-      console.warn('[functional] Consulting section not found — may have been removed.');
-      return;
-    }
+    test.skip(await community.consultingSection.count() === 0, 'Consulting section not found');
     await expect(community.consultingSection).toBeVisible({ timeout: 10_000 });
 
     // Should have a link or CTA
