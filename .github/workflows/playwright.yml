@@ -1,19 +1,8 @@
 name: Playwright Tests
 
+# Manual only: the QA workflow (qa.yml) now runs smoke tests on push/PR and the scheduled suites.
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-  schedule:
-    # Run full suite nightly at 2 AM UTC
-    - cron: '0 2 * * *'
   workflow_dispatch:
-    inputs:
-      test_tag:
-        description: 'Test tag to run (smoke, navigation, forms, functional, visual, responsive)'
-        required: false
-        default: ''
 
 jobs:
   smoke:
