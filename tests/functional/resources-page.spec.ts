@@ -108,10 +108,7 @@ test.describe('Resources Page @functional', () => {
   test('Cultivation blog category filter is visible @functional', async ({ page, siteConfig }) => {
     const resources = new ResourcesPage(page, siteConfig);
     const filterCount = await resources.cultivationFilter.count();
-    if (filterCount === 0) {
-      console.warn('[functional] Cultivation category filter not found on /resources.');
-      return;
-    }
+    test.skip(filterCount === 0, 'Cultivation category filter not found on /resources');
     await expect(resources.cultivationFilter).toBeVisible({ timeout: 10_000 });
   });
 
@@ -134,10 +131,7 @@ test.describe('Resources Page @functional', () => {
     }
 
     const emailInput = resources.newsletterEmailInput;
-    if (await emailInput.count() === 0) {
-      console.warn('[functional] Newsletter email input not found — form may have changed.');
-      return;
-    }
+    test.skip(await emailInput.count() === 0, 'Newsletter email input not found');
 
     await expect(emailInput).toBeVisible({ timeout: 10_000 });
     await expect(emailInput).not.toBeDisabled();
@@ -148,20 +142,14 @@ test.describe('Resources Page @functional', () => {
   test('Watch Now section is visible on resources page @functional', async ({ page, siteConfig }) => {
     const resources = new ResourcesPage(page, siteConfig);
     const section = resources.watchNowSection;
-    if (await section.count() === 0) {
-      console.warn('[functional] Watch Now section not found on /resources.');
-      return;
-    }
+    test.skip(await section.count() === 0, 'Watch Now section not found on /resources');
     await expect(section).toBeVisible({ timeout: 10_000 });
   });
 
   test('Forum section is visible on resources page @functional', async ({ page, siteConfig }) => {
     const resources = new ResourcesPage(page, siteConfig);
     const section = resources.forumSection;
-    if (await section.count() === 0) {
-      console.warn('[functional] Forum section not found on /resources.');
-      return;
-    }
+    test.skip(await section.count() === 0, 'Forum section not found on /resources');
     await expect(section).toBeVisible({ timeout: 10_000 });
   });
 });

@@ -57,7 +57,7 @@ test.describe('Industry Insight Page @functional', () => {
 
   test('article cards are present on the page @functional', async ({ page, siteConfig }) => {
     const insight = new IndustryInsightPage(page, siteConfig);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
     const count = await insight.getArticleCount();
     if (count === 0) {
       console.warn('[functional] No article card elements found — CSS selectors may need updating for this CMS.');
@@ -68,13 +68,10 @@ test.describe('Industry Insight Page @functional', () => {
 
   test('first articles have non-empty titles and valid hrefs @functional', async ({ page, siteConfig }) => {
     const insight = new IndustryInsightPage(page, siteConfig);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     const articles = await insight.getFirstArticles(5);
-    if (articles.length === 0) {
-      console.warn('[functional] Could not extract article metadata — article link selectors may need updating.');
-      return;
-    }
+    test.skip(articles.length === 0, 'Could not extract article metadata');
 
     for (const article of articles) {
       expect(article.title, `Article title should be non-empty: "${article.href}"`).toBeTruthy();
@@ -89,7 +86,7 @@ test.describe('Industry Insight Page @functional', () => {
 
   test('article links stay on the site domain or known partner domains @functional', async ({ page, siteConfig }) => {
     const insight = new IndustryInsightPage(page, siteConfig);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     const articles = await insight.getFirstArticles(5);
     const siteOrigin = new URL(siteConfig.url).origin;
